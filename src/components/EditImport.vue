@@ -35,15 +35,14 @@ export default {
   components: { SuccessMessage },
   methods: {
     importUsers() {
+      this.isChanged = true;
       try {
+        this.isError = false;
         const imported = JSON.parse(this.code);
         this.$store.commit("setUsers", imported);
         localStorage.setItem("users", JSON.stringify(imported));
-        this.isChanged = true;
-        this.isError = false;
       } catch {
         this.isError = true;
-        // alert("Invalid input");
       }
     }
   }
