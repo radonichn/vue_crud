@@ -1,14 +1,19 @@
 <template>
   <div>
-    <h5 class="badge badge-success h5" v-if="submit">Success submit!</h5>
-    <h5 class="badge badge-success h5" v-else>Success edit!</h5>
+    <div v-if="error">
+      <h5 class="badge badge-danger h5" v-if="submit">Invalid input!</h5>
+    </div>
+    <div v-else>
+      <h5 class="badge badge-success h5" v-if="submit">Success submit!</h5>
+      <h5 class="badge badge-success h5" v-else>Success edit!</h5>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   name: "SuccessMessage",
-  props: ["submit"]
+  props: ["submit", "error"]
 };
 </script>
 

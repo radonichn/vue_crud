@@ -19,16 +19,14 @@ export default {
   },
   methods: {
     deleteUser(id) {
-      this.$store.state.users = [...this.$store.state.users].filter(
-        u => u.id != id
-      );
-      const state = this.$store.state.users;
-      localStorage.setItem("users", JSON.stringify(state));
+      const users = [...this.$store.state.users].filter(u => u.id != id);
+      this.$store.commit("setUsers", users);
+      localStorage.setItem("users", JSON.stringify(users));
     }
   },
   mounted() {
     const users = JSON.parse(localStorage.getItem("users"));
-    if (users) this.$store.state.users = users;
+    if (users) this.$store.commit("setUsers", users);
   }
 };
 </script>

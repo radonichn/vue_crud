@@ -10,9 +10,9 @@
           v-model="code"
         ></textarea>
       </div>
-      <input type="submit" class="btn btn-dark" value="Import users" @click="importUsers">
+      <input type="submit" class="btn btn-dark" value="Import users" @click.prevent="importUsers">
     </form>
-    <SuccessMessage v-if="this.isChanged" :submit="true"/>
+    <SuccessMessage v-if="this.isChanged" :submit="true" :error="this.isError"/>
   </div>
 </template>
 
@@ -23,20 +23,27 @@ export default {
   data() {
     return {
       code: "",
-      isChanged: false
+      isChanged: false,
+      isError: false
     };
   },
+  // computed: {
+  //   isError() {
+  //     return this.isError;
+  //   }
+  // },
   components: { SuccessMessage },
   methods: {
-    importUsers(e) {
-      e.preventDefault();
-      if (this.code !== "") {
+    importUsers() {
+      try {
+        const imported = JSON.parse(this.code);
+        this.$store.commit("setUsers", imported);
+        localStorage.setItem("users", JSON.stringify(imported));
         this.isChanged = true;
-        const done = JSON.parse(this.code);
-        this.$store.state.users = done;
-        localStorage.setItem("users", JSON.stringify(done));
-      } else {
-        alert("Empty field!");
+        this.isError = false;
+      } catch {
+        this.isError = true;
+        // alert("Invalid input");
       }
     }
   }

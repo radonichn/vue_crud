@@ -43,8 +43,13 @@
             v-model="phone"
           >
         </div>
-        <button v-if="isSubmit" type="submit" class="btn btn-primary" @click="addUser">Submit</button>
-        <button v-else type="submit" class="btn btn-warning" @click="setUser">Edit</button>
+        <button
+          v-if="isSubmit"
+          type="submit"
+          class="btn btn-primary"
+          @click.prevent="addUser"
+        >Submit</button>
+        <button v-else type="submit" class="btn btn-warning" @click.prevent="setUser">Edit</button>
       </form>
       <SuccessMessage v-if="this.isChanged" :submit="isSubmit"/>
       <EditImport v-if="isSubmit"/>
@@ -73,8 +78,7 @@ export default {
     EditImport
   },
   methods: {
-    addUser(e) {
-      e.preventDefault();
+    addUser() {
       const newUser = {
         id: uuid.v4(),
         name: this.name,
@@ -82,13 +86,12 @@ export default {
         email: this.email,
         phone: this.phone
       };
-      this.$store.state.users = [...this.$store.state.users, newUser];
+      this.$store.commit("addUser", newUser);
       this.isChanged = true;
-      const state = this.$store.state.users;
-      localStorage.setItem("users", JSON.stringify(state));
+      // const state = this.$store.state.users;
+      localStorage.setItem("users", JSON.stringify(this.$store.state.users));
     },
-    setUser(e) {
-      e.preventDefault();
+    setUser() {
       if (this.$store.state.users) {
         const mappedUsers = this.$store.state.users.map(x => {
           if (x.id === this.$route.params.id) {
@@ -102,10 +105,9 @@ export default {
           }
           return x;
         });
-        this.$store.state.users = mappedUsers;
+        this.$store.commit("setUsers", mappedUsers);
         this.isChanged = true;
-        const state = this.$store.state.users;
-        localStorage.setItem("users", JSON.stringify(state));
+        localStorage.setItem("users", JSON.stringify(this.$store.state.users));
       }
     }
   },
